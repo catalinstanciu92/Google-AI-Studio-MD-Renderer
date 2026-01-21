@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Markdown Auto-Renderer",
+  "name": "Google AI Studio MD Renderer",
   "version": "1.0",
-  "description": "Automatically renders markdown in specific sections.",
+  "description": "Renders markdown output from Google AI Studio, converting plain pre-formatted text to styled HTML.",
   "permissions": ["storage"],
   "action": {
     "default_popup": "popup.html"
