@@ -1,4 +1,4 @@
-console.log('[Markdown Renderer] Extension loaded');
+console.log('[Google AI Studio MD Renderer] Extension loaded');
 
 let isEnabled = true;
 let intervalId = null;
@@ -58,14 +58,14 @@ function parseMarkdown(text) {
 
 function renderMarkdown() {
   if (!isEnabled) {
-    console.log('[Markdown Renderer] Skipping render - disabled');
+    console.log('[Google AI Studio MD Renderer] Skipping render - disabled');
     return;
   }
 
-  console.log('[Markdown Renderer] Checking for sections...');
+  console.log('[Google AI Studio MD Renderer] Checking for sections...');
 
   const sections = document.querySelectorAll('section.chunk-editor-main');
-  console.log('[Markdown Renderer] Found sections:', sections.length);
+  console.log('[Google AI Studio MD Renderer] Found sections:', sections.length);
 
   if (sections.length === 0) {
     return;
@@ -73,20 +73,20 @@ function renderMarkdown() {
 
   sections.forEach((section, sectionIndex) => {
     const divs = section.querySelectorAll('div.very-large-text-container:not(.cs-markdown-rendered)');
-    console.log(`[Markdown Renderer] Section ${sectionIndex}: Found ${divs.length} unrendered divs`);
+    console.log(`[Google AI Studio MD Renderer] Section ${sectionIndex}: Found ${divs.length} unrendered divs`);
 
     divs.forEach((div, divIndex) => {
       const rawText = div.innerText.trim();
-      console.log(`[Markdown Renderer] Div ${divIndex}: text length = ${rawText.length}`);
+      console.log(`[Google AI Studio MD Renderer] Div ${divIndex}: text length = ${rawText.length}`);
 
       if (rawText.length > 0) {
         try {
           const rendered = parseMarkdown(rawText);
           div.innerHTML = rendered;
           div.classList.add('cs-markdown-rendered');
-          console.log(`[Markdown Renderer] Successfully rendered div ${divIndex}`);
+          console.log(`[Google AI Studio MD Renderer] Successfully rendered div ${divIndex}`);
         } catch (err) {
-          console.error('[Markdown Renderer] Error rendering:', err);
+          console.error('[Google AI Studio MD Renderer] Error rendering:', err);
         }
       }
     });
@@ -94,13 +94,13 @@ function renderMarkdown() {
 }
 
 function startMonitoring() {
-  console.log('[Markdown Renderer] Starting monitoring...');
+  console.log('[Google AI Studio MD Renderer] Starting monitoring...');
   renderMarkdown();
   intervalId = setInterval(renderMarkdown, 5000);
 }
 
 function stopMonitoring() {
-  console.log('[Markdown Renderer] Stopping monitoring...');
+  console.log('[Google AI Studio MD Renderer] Stopping monitoring...');
   if (intervalId) {
     clearInterval(intervalId);
     intervalId = null;
@@ -109,7 +109,7 @@ function stopMonitoring() {
 
 chrome.storage.local.get(['enabled'], (result) => {
   isEnabled = result.enabled !== false;
-  console.log('[Markdown Renderer] Initial state:', isEnabled);
+  console.log('[Google AI Studio MD Renderer] Initial state:', isEnabled);
 
   if (isEnabled) {
     startMonitoring();
@@ -119,7 +119,7 @@ chrome.storage.local.get(['enabled'], (result) => {
 chrome.storage.onChanged.addListener((changes) => {
   if (changes.enabled) {
     isEnabled = changes.enabled.newValue;
-    console.log('[Markdown Renderer] State changed to:', isEnabled);
+    console.log('[Google AI Studio MD Renderer] State changed to:', isEnabled);
 
     if (isEnabled) {
       startMonitoring();
@@ -129,4 +129,4 @@ chrome.storage.onChanged.addListener((changes) => {
   }
 });
 
-console.log('[Markdown Renderer] Script initialized');
+console.log('[Google AI Studio MD Renderer] Script initialized');
