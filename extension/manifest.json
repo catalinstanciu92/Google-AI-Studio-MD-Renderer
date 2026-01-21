@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Markdown Auto-Renderer",
+  "version": "1.0",
+  "description": "Automatically renders markdown in specific sections.",
+  "permissions": ["storage"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["style.css"]
+    }
+  ]
+}
