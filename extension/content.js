@@ -1,6 +1,7 @@
 console.log('[Google AI Studio MD Renderer] Extension loaded');
 
 let isEnabled = true;
+let runEverywhere = false;
 let intervalId = null;
 
 function parseMarkdown(text) {
@@ -56,9 +57,21 @@ function parseMarkdown(text) {
   return html;
 }
 
+function isAllowedUrl() {
+  if (runEverywhere) {
+    return true;
+  }
+  return window.location.hostname.includes('aistudio.google.com');
+}
+
 function renderMarkdown() {
   if (!isEnabled) {
     console.log('[Google AI Studio MD Renderer] Skipping render - disabled');
+    return;
+  }
+
+  if (!isAllowedUrl()) {
+    console.log('[Google AI Studio MD Renderer] Skipping - URL not allowed (runEverywhere:', runEverywhere + ')');
     return;
   }
 
@@ -94,6 +107,10 @@ function renderMarkdown() {
 }
 
 function startMonitoring() {
+  if (!isAllowedUrl()) {
+    console.log('[Google AI Studio MD Renderer] Not starting - URL not allowed');
+    return;
+  }
   console.log('[Google AI Studio MD Renderer] Starting monitoring...');
   renderMarkdown();
   intervalId = setInterval(renderMarkdown, 5000);
@@ -107,9 +124,10 @@ function stopMonitoring() {
   }
 }
 
-chrome.storage.local.get(['enabled'], (result) => {
+chrome.storage.local.get(['enabled', 'runEverywhere'], (result) => {
   isEnabled = result.enabled !== false;
-  console.log('[Google AI Studio MD Renderer] Initial state:', isEnabled);
+  runEverywhere = result.runEverywhere === true;
+  console.log('[Google AI Studio MD Renderer] Initial state:', isEnabled, '| runEverywhere:', runEverywhere);
 
   if (isEnabled) {
     startMonitoring();
@@ -117,14 +135,24 @@ chrome.storage.local.get(['enabled'], (result) => {
 });
 
 chrome.storage.onChanged.addListener((changes) => {
+  let needsRestart = false;
+
   if (changes.enabled) {
     isEnabled = changes.enabled.newValue;
-    console.log('[Google AI Studio MD Renderer] State changed to:', isEnabled);
+    console.log('[Google AI Studio MD Renderer] Enabled state changed to:', isEnabled);
+    needsRestart = true;
+  }
 
+  if (changes.runEverywhere) {
+    runEverywhere = changes.runEverywhere.newValue;
+    console.log('[Google AI Studio MD Renderer] runEverywhere changed to:', runEverywhere);
+    needsRestart = true;
+  }
+
+  if (needsRestart) {
+    stopMonitoring();
     if (isEnabled) {
-      startMonitoring();
-    } else {
-      stopMonitoring();
+      setTimeout(startMonitoring, 100);
     }
   }
 });
