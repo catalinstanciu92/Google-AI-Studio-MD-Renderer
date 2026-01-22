@@ -6,6 +6,7 @@ A Chrome extension that renders markdown output from Google AI Studio, convertin
 
 - **Google AI Studio integration**: Specifically designed to render markdown output from Google AI Studio
 - **Auto-detection**: Scans for `section.chunk-editor-main` containing divs with class `.very-large-text-container`
+- **Scope control**: Toggle between "Google AI Studio only" (default) or "Run Everywhere"
 - **Markdown rendering**: Converts markdown syntax to styled HTML
 - **Smart filtering**: Only renders unrendered content (flagged with `cs-markdown-rendered`)
 - **Toggle control**: Enable/disable the renderer via browser action popup
@@ -56,6 +57,16 @@ Modify the 5000ms interval in `content.js`:
 // Check every 10 seconds instead of 5
 intervalId = setInterval(renderMarkdown, 10000);
 ```
+
+### Scope Control
+
+By default, the extension only runs on `aistudio.google.com`. Use the popup toggle to enable it on all websites:
+
+1. Click the extension icon in Chrome toolbar
+2. Toggle "Run Everywhere" to enable on all sites
+3. The setting is persisted and remembered
+
+When disabled (default), the extension checks the current URL and only processes content on Google AI Studio.
 
 ## Files
 
